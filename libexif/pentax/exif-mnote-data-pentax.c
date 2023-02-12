@@ -59,13 +59,16 @@ exif_mnote_data_pentax_free (ExifMnoteData *n)
 }
 
 static char *
-exif_mnote_data_pentax_get_value (ExifMnoteData *d, unsigned int i, char *val, unsigned int maxlen)
+exif_mnote_data_pentax_get_value (ExifMnoteData *d, unsigned int i, char *val, unsigned int maxlen, ExifFormat *hint)
 {
 	ExifMnoteDataPentax *n = (ExifMnoteDataPentax *) d;
 
 	if (!n) return NULL;
 	if (n->count <= i) return NULL;
-	return mnote_pentax_entry_get_value (&n->entries[i], val, maxlen);
+
+	MnotePentaxEntry *e = &n->entries[i];
+	if (hint) *hint = e->format;
+	return mnote_pentax_entry_get_value (e, val, maxlen);
 }
 
 /** 

@@ -142,10 +142,10 @@ exif_mnote_data_get_description (ExifMnoteData *d, unsigned int n)
 }
 	
 char *
-exif_mnote_data_get_value (ExifMnoteData *d, unsigned int n, char *val, unsigned int maxlen)
+exif_mnote_data_get_value (ExifMnoteData *d, unsigned int n, char *val, unsigned int maxlen, ExifFormat *hint)
 {
 	if (!d || !d->methods.get_value) return NULL;
-	return d->methods.get_value (d, n, val, maxlen);
+	return d->methods.get_value (d, n, val, maxlen, hint);
 }
 
 void

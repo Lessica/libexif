@@ -298,7 +298,7 @@ static void mnote_null_test(void)
 
 	exif_mnote_data_get_description(NULL, 0);
 
-	exif_mnote_data_get_value(NULL, 0, NULL, 123);
+	exif_mnote_data_get_value(NULL, 0, NULL, 123, NULL);
 
 	exif_mnote_data_log(NULL, NULL);
 }

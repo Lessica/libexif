@@ -52,7 +52,7 @@ static void show_mnote_tag(ExifData *d, unsigned tag)
         for (i=0; i < num; ++i) {
             char buf[1024];
             if (exif_mnote_data_get_id(mn, i) == tag) {
-                if (exif_mnote_data_get_value(mn, i, buf, sizeof(buf))) {
+                if (exif_mnote_data_get_value(mn, i, buf, sizeof(buf), NULL)) {
                     /* Don't bother printing it if it's entirely blank */
                     trim_spaces(buf);
                     if (*buf) {

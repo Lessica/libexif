@@ -18,6 +18,7 @@
  * Boston, MA  02110-1301  USA.
  */
 
+#include "exif-utils.h"
 #include <config.h>
 
 #include <libexif/exif-utils.h>
@@ -32,6 +33,8 @@ exif_array_set_byte_order (ExifFormat f, unsigned char *b, unsigned int n,
 	ExifSShort ss;
 	ExifLong l;
 	ExifSLong sl;
+	ExifFloat fl;
+	ExifDouble d;
 	ExifRational r;
 	ExifSRational sr;
 
@@ -72,6 +75,18 @@ exif_array_set_byte_order (ExifFormat f, unsigned char *b, unsigned int n,
 		for (j = 0; j < n; j++) {
 			sr = exif_get_srational (b + j * fs, o_orig);
 			exif_set_srational (b + j * fs, o_new, sr);
+		}
+		break;
+	case EXIF_FORMAT_FLOAT:
+		for (j = 0; j < n; j++) {
+			fl = exif_get_float (b + j * fs, o_orig);
+			exif_set_float (b + j * fs, o_new, fl);
+		}
+		break;
+	case EXIF_FORMAT_DOUBLE:
+		for (j = 0; j < n; j++) {
+			d = exif_get_double (b + j * fs, o_orig);
+			exif_set_double (b + j * fs, o_new, d);
 		}
 		break;
 	case EXIF_FORMAT_UNDEFINED:
@@ -171,6 +186,116 @@ void
 exif_set_long (unsigned char *b, ExifByteOrder order, ExifLong value)
 {
 	exif_set_slong (b, order, value);
+}
+
+ExifFloat
+exif_get_float (const unsigned char *buf, ExifByteOrder order)
+{
+	ExifFloat f;
+	unsigned char *b = (unsigned char *) &f;
+
+	if (!buf) return 0;
+	switch (order) {
+	case EXIF_BYTE_ORDER_MOTOROLA:
+		b[0] = buf[0];
+		b[1] = buf[1];
+		b[2] = buf[2];
+		b[3] = buf[3];
+		break;
+	case EXIF_BYTE_ORDER_INTEL:
+		b[0] = buf[3];
+		b[1] = buf[2];
+		b[2] = buf[1];
+		b[3] = buf[0];
+		break;
+	}
+
+	return (f);
+}
+
+void
+exif_set_float (unsigned char *buf, ExifByteOrder order, ExifFloat value)
+{
+	unsigned char *b = (unsigned char *) &value;
+
+	if (!buf) return;
+	switch (order) {
+	case EXIF_BYTE_ORDER_MOTOROLA:
+		buf[0] = b[0];
+		buf[1] = b[1];
+		buf[2] = b[2];
+		buf[3] = b[3];
+		break;
+	case EXIF_BYTE_ORDER_INTEL:
+		buf[0] = b[3];
+		buf[1] = b[2];
+		buf[2] = b[1];
+		buf[3] = b[0];
+		break;
+	}
+}
+
+ExifDouble
+exif_get_double (const unsigned char *buf, ExifByteOrder order)
+{
+	ExifDouble d;
+	unsigned char *b = (unsigned char *) &d;
+
+	if (!buf) return 0;
+	switch (order) {
+	case EXIF_BYTE_ORDER_MOTOROLA:
+		b[0] = buf[0];
+		b[1] = buf[1];
+		b[2] = buf[2];
+		b[3] = buf[3];
+		b[4] = buf[4];
+		b[5] = buf[5];
+		b[6] = buf[6];
+		b[7] = buf[7];
+		break;
+	case EXIF_BYTE_ORDER_INTEL:
+		b[0] = buf[7];
+		b[1] = buf[6];
+		b[2] = buf[5];
+		b[3] = buf[4];
+		b[4] = buf[3];
+		b[5] = buf[2];
+		b[6] = buf[1];
+		b[7] = buf[0];
+		break;
+	}
+
+	return (d);
+}
+
+void
+exif_set_double (unsigned char *buf, ExifByteOrder order, ExifDouble value)
+{
+	unsigned char *b = (unsigned char *) &value;
+
+	if (!buf) return;
+	switch (order) {
+	case EXIF_BYTE_ORDER_MOTOROLA:
+		buf[0] = b[0];
+		buf[1] = b[1];
+		buf[2] = b[2];
+		buf[3] = b[3];
+		buf[4] = b[4];
+		buf[5] = b[5];
+		buf[6] = b[6];
+		buf[7] = b[7];
+		break;
+	case EXIF_BYTE_ORDER_INTEL:
+		buf[0] = b[7];
+		buf[1] = b[6];
+		buf[2] = b[5];
+		buf[3] = b[4];
+		buf[4] = b[3];
+		buf[5] = b[2];
+		buf[6] = b[1];
+		buf[7] = b[0];
+		break;
+	}
 }
 
 ExifSRational

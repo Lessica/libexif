@@ -60,7 +60,7 @@ test_exif_data (ExifData *d)
 				exif_mnote_data_get_title (md, i));
 		printf("  Description: '%s'\n",
 				exif_mnote_data_get_description (md, i));
-		p = exif_mnote_data_get_value (md, i, v, sizeof (v));
+		p = exif_mnote_data_get_value (md, i, v, sizeof (v), NULL);
 		if (p) { printf("  Value: '%s'\n", v); }
 	}
 

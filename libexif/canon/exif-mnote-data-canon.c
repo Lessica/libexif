@@ -81,7 +81,7 @@ exif_mnote_data_canon_get_tags (ExifMnoteDataCanon *dc, unsigned int n,
 }
 
 static char *
-exif_mnote_data_canon_get_value (ExifMnoteData *note, unsigned int n, char *val, unsigned int maxlen)
+exif_mnote_data_canon_get_value (ExifMnoteData *note, unsigned int n, char *val, unsigned int maxlen, ExifFormat *hint)
 {
 	ExifMnoteDataCanon *dc = (ExifMnoteDataCanon *) note;
 	unsigned int m, s;
@@ -89,7 +89,10 @@ exif_mnote_data_canon_get_value (ExifMnoteData *note, unsigned int n, char *val,
 	if (!dc) return NULL;
 	exif_mnote_data_canon_get_tags (dc, n, &m, &s);
 	if (m >= dc->count) return NULL;
-	return mnote_canon_entry_get_value (&dc->entries[m], s, val, maxlen);
+
+	MnoteCanonEntry *e = &dc->entries[m];
+	if (hint) *hint = e->format;
+	return mnote_canon_entry_get_value (e, s, val, maxlen);
 }
 
 static void

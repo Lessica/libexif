@@ -108,48 +108,48 @@ exif_mnote_data_apple_load(ExifMnoteData *md, const unsigned char *buf, unsigned
     memset(d->entries, 0, sizeof(MnoteAppleEntry) * tcount);
 
     for (i = 0; i < tcount; i++) {
-	if (ofs + 12 > buf_size) {
-		exif_log (md->log, EXIF_LOG_CODE_CORRUPT_DATA,
+    if (ofs + 12 > buf_size) {
+        exif_log (md->log, EXIF_LOG_CODE_CORRUPT_DATA,
                                   "ExifMnoteApplet", "Tag size overflow detected (%u vs size %u)", ofs + 12, buf_size);
-		break;
-	}
+        break;
+    }
         d->entries[i].tag = exif_get_short(buf + ofs, d->order);
         d->entries[i].format = exif_get_short(buf + ofs + 2, d->order);
         d->entries[i].components = exif_get_long(buf + ofs + 4, d->order);
         d->entries[i].order = d->order;
-	if ((d->entries[i].components) && (buf_size / d->entries[i].components < exif_format_get_size(d->entries[i].format))) {
-		exif_log (md->log, EXIF_LOG_CODE_CORRUPT_DATA,
+    if ((d->entries[i].components) && (buf_size / d->entries[i].components < exif_format_get_size(d->entries[i].format))) {
+        exif_log (md->log, EXIF_LOG_CODE_CORRUPT_DATA,
                                   "ExifMnoteApplet", "Tag size overflow detected (components %lu vs size %u)", d->entries[i].components, buf_size);
-		break;
-	}
+        break;
+    }
         dsize = exif_format_get_size(d->entries[i].format) * d->entries[i].components;
-	if ((dsize > 65536) || (dsize > buf_size)) {
-		/* Corrupt data: EXIF data size is limited to the
-		 * maximum size of a JPEG segment (64 kb).
-		 */
-		break;
-	}
+    if ((dsize > 65536) || (dsize > buf_size)) {
+        /* Corrupt data: EXIF data size is limited to the
+         * maximum size of a JPEG segment (64 kb).
+         */
+        break;
+    }
         if (dsize > 4) {
             dofs = d->offset + exif_get_long(buf + ofs + 8, d->order);
         } else {
             dofs = ofs + 8;
         }
-	if (dofs > buf_size) {
-		exif_log (md->log, EXIF_LOG_CODE_CORRUPT_DATA,
+    if (dofs > buf_size) {
+        exif_log (md->log, EXIF_LOG_CODE_CORRUPT_DATA,
                                   "ExifMnoteApplet", "Tag size overflow detected (%u vs size %u)", dofs, buf_size);
-		continue;
-	}
+        continue;
+    }
         ofs += 12;
         d->entries[i].data = exif_mem_alloc(md->mem, dsize);
         if (!d->entries[i].data) {
             EXIF_LOG_NO_MEMORY(md->log, "ExifMnoteApple", dsize);
             continue;
         }
-	if (dofs + dsize > buf_size) {
-		exif_log (md->log, EXIF_LOG_CODE_CORRUPT_DATA,
+    if (dofs + dsize > buf_size) {
+        exif_log (md->log, EXIF_LOG_CODE_CORRUPT_DATA,
                                   "ExifMnoteApplet", "Tag size overflow detected (%u vs size %u)", dofs + dsize, buf_size);
-		continue;
-	}
+        continue;
+    }
         memcpy(d->entries[i].data, buf + dofs, dsize);
         d->entries[i].size = dsize;
     }
@@ -181,8 +181,8 @@ exif_mnote_data_apple_set_byte_order(ExifMnoteData *md , ExifByteOrder o) {
     }
 
     for (i = 0; i < d->count; i++) {
-	if (d->entries[i].components && (d->entries[i].size/d->entries[i].components < exif_format_get_size (d->entries[i].format)))
-		continue;
+    if (d->entries[i].components && (d->entries[i].size/d->entries[i].components < exif_format_get_size (d->entries[i].format)))
+        continue;
         exif_array_set_byte_order(d->entries[i].format, d->entries[i].data,
                                   d->entries[i].components, d->entries[i].order, o);
         d->entries[i].order = o;
@@ -244,14 +244,16 @@ exif_mnote_data_apple_get_description(ExifMnoteData *md, unsigned int i) {
 }
 
 static char *
-exif_mnote_data_apple_get_value(ExifMnoteData *md, unsigned int i, char *val, unsigned int maxlen) {
+exif_mnote_data_apple_get_value(ExifMnoteData *md, unsigned int i, char *val, unsigned int maxlen, ExifFormat *hint) {
     ExifMnoteDataApple *d = (ExifMnoteDataApple *) md;
 
     if (!val || !d || (d->count <= i)) {
         return NULL;
     }
 
-    return mnote_apple_entry_get_value(&d->entries[i], val, maxlen);
+    MnoteAppleEntry *e = &d->entries[i];
+    if (hint) *hint = e->format;
+    return mnote_apple_entry_get_value(e, val, maxlen);
 }
 
 int
@@ -259,7 +261,7 @@ exif_mnote_data_apple_identify(const ExifData *ed, const ExifEntry *e) {
     (void) ed;
 
     if (e->size < strlen("Apple iOS")+1)
-	return 0;
+    return 0;
 
     return !memcmp((const char *) e->data, "Apple iOS", strlen("Apple iOS"));
 }

@@ -420,14 +420,14 @@ struct Content
         return content_ ? content_->count : 0;
     }
 
-    void add(Entry &entry)
+    int add(Entry &entry)
     {
-        exif_content_add_entry(content_, entry.entry_);
+        return exif_content_add_entry(content_, entry.entry_);
     }
 
-    void remove(Entry &entry)
+    int remove(Entry &entry)
     {
-        exif_content_remove_entry(content_, entry.entry_);
+        return exif_content_remove_entry(content_, entry.entry_);
     }
 
         // for your convenience

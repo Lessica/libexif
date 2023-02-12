@@ -109,9 +109,10 @@ const char  *exif_mnote_data_get_description (ExifMnoteData *d, unsigned int n);
  * \param[in] n index of the entry within the MakerNote data
  * \param[out] val buffer in which to store value
  * \param[in] maxlen length of the buffer val
+ * \param[out] hint pointer to a variable to store the format of the value
  * \return val pointer, or NULL on error
  */
-char  *exif_mnote_data_get_value (ExifMnoteData *d, unsigned int n, char *val, unsigned int maxlen);
+char  *exif_mnote_data_get_value (ExifMnoteData *d, unsigned int n, char *val, unsigned int maxlen, ExifFormat *hint);
 
 void exif_mnote_data_log (ExifMnoteData *, ExifLog *);
 

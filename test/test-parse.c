@@ -65,7 +65,7 @@ static void dump_makernote(ExifData *d) {
     int num = exif_mnote_data_count(mn);
     printf("  MakerNote\n");
     for (i=0; i < num; ++i) {
-      if (exif_mnote_data_get_value(mn, i, buf, sizeof(buf))) {
+      if (exif_mnote_data_get_value(mn, i, buf, sizeof(buf), NULL)) {
 	const char *name = exif_mnote_data_get_name(mn, i);
 	unsigned int id = exif_mnote_data_get_id(mn, i);
 	if (!name)

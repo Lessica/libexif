@@ -56,6 +56,12 @@ typedef uint32_t	ExifLong;          /* 4 bytes */
 /*! EXIF Signed Long data type */
 typedef int32_t		ExifSLong;         /* 4 bytes */
 
+/*! EXIF Float data type */
+typedef float		ExifFloat;         /* 4 bytes */
+
+/*! EXIF Double data type */
+typedef double		ExifDouble;        /* 8 bytes */
+
 /*! EXIF Unsigned Rational data type */
 typedef struct {ExifLong numerator; ExifLong denominator;} ExifRational;
 
@@ -96,6 +102,22 @@ ExifLong      exif_get_long      (const unsigned char *b, ExifByteOrder order);
  * \return value
  */
 ExifSLong     exif_get_slong     (const unsigned char *b, ExifByteOrder order);
+
+/*! Retrieve an #ExifFloat value from memory.
+ *
+ * \param[in] b pointer to raw EXIF value in memory
+ * \param[in] order byte order of raw value
+ * \return value
+ */
+ExifFloat     exif_get_float     (const unsigned char *b, ExifByteOrder order);
+
+/*! Retrieve an #ExifDouble value from memory.
+ *
+ * \param[in] b pointer to raw EXIF value in memory
+ * \param[in] order byte order of raw value
+ * \return value
+ */
+ExifDouble    exif_get_double    (const unsigned char *b, ExifByteOrder order);
 
 /*! Retrieve an #ExifRational value from memory.
  *
@@ -148,6 +170,24 @@ void exif_set_long      (unsigned char *b, ExifByteOrder order,
  */
 void exif_set_slong     (unsigned char *b, ExifByteOrder order,
 			 ExifSLong value);
+
+/*! Store an ExifFloat value into memory in EXIF format.
+ *
+ * \param[out] b buffer in which to write raw value
+ * \param[in] order byte order to use
+ * \param[in] value data value to store
+ */
+void exif_set_float     (unsigned char *b, ExifByteOrder order,
+			 ExifFloat value);
+
+/*! Store an ExifDouble value into memory in EXIF format.
+ *
+ * \param[out] b buffer in which to write raw value
+ * \param[in] order byte order to use
+ * \param[in] value data value to store
+ */
+void exif_set_double    (unsigned char *b, ExifByteOrder order,
+			 ExifDouble value);
 
 /*! Store an ExifRational value into memory in EXIF format.
  *

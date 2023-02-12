@@ -96,7 +96,7 @@ test_exif_data (ExifData *d)
 		exif_mnote_data_get_name (md, i);
 		exif_mnote_data_get_title (md, i);
 		exif_mnote_data_get_description (md, i);
-		exif_mnote_data_get_value (md, i, v, sizeof (v));
+		exif_mnote_data_get_value (md, i, v, sizeof (v), NULL);
 	}
 
 	return 0;

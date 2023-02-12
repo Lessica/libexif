@@ -97,16 +97,18 @@ void         exif_content_free    (ExifContent *content);
  *
  * \param[out] c IFD
  * \param[in] entry EXIF entry to add
+ * \return 1 on success, or 0 on error
  */
-void         exif_content_add_entry    (ExifContent *c, ExifEntry *entry);
+int         exif_content_add_entry    (ExifContent *c, ExifEntry *entry);
 
 /*! Remove an EXIF tag from an IFD.
  * If this tag does not exist in the IFD, this function does nothing.
  *
  * \param[out] c IFD
  * \param[in] e EXIF entry to remove
+ * \return 1 on success, or 0 on error
  */
-void         exif_content_remove_entry (ExifContent *c, ExifEntry *e);
+int         exif_content_remove_entry (ExifContent *c, ExifEntry *e);
 
 /*! Return the #ExifEntry in this IFD corresponding to the given tag.
  * This is a pointer into a member of the #ExifContent array and must NOT be

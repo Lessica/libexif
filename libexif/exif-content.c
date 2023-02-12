@@ -135,11 +135,11 @@ exif_content_dump (ExifContent *content, unsigned int indent)
 		exif_entry_dump (content->entries[i], indent + 1);
 }
 
-void
+int
 exif_content_add_entry (ExifContent *c, ExifEntry *entry)
 {
 	ExifEntry **entries;
-	if (!c || !c->priv || !entry || entry->parent) return;
+	if (!c || !c->priv || !entry || entry->parent) return 0;
 
 	/* One tag can only be added once to an IFD. */
 	if (exif_content_get_entry (c, entry->tag)) {
@@ -147,25 +147,27 @@ exif_content_add_entry (ExifContent *c, ExifEntry *entry)
 			"An attempt has been made to add "
 			"the tag '%s' twice to an IFD. This is against "
 			"specification.", exif_tag_get_name (entry->tag));
-		return;
+		return 0;
 	}
 
 	entries = exif_mem_realloc (c->priv->mem,
 		c->entries, sizeof (ExifEntry*) * (c->count + 1));
-	if (!entries) return;
+	if (!entries) return 0;
 	entry->parent = c;
 	entries[c->count++] = entry;
 	c->entries = entries;
 	exif_entry_ref (entry);
+
+	return 1;
 }
 
-void
+int
 exif_content_remove_entry (ExifContent *c, ExifEntry *e)
 {
 	unsigned int i;
 	ExifEntry **t, *temp;
 
-	if (!c || !c->priv || !e || (e->parent != c)) return;
+	if (!c || !c->priv || !e || (e->parent != c)) return 0;
 
 	/* Search the entry */
 	for (i = 0; i < c->count; i++)
@@ -173,16 +175,15 @@ exif_content_remove_entry (ExifContent *c, ExifEntry *e)
 					break;
 
 	if (i == c->count)
-			return;
+			return 0;
 
 	/* Remove the entry */
 	temp = c->entries[c->count-1];
 	if (c->count > 1) {
 		t = exif_mem_realloc (c->priv->mem, c->entries,
 					sizeof(ExifEntry*) * (c->count - 1));
-		if (!t) {
-			return;
-		}
+		if (!t)
+				return 0;
 		c->entries = t;
 		c->count--;
 		if (i != c->count) { /* we deallocated the last slot already */ 
@@ -194,8 +195,10 @@ exif_content_remove_entry (ExifContent *c, ExifEntry *e)
 		c->entries = NULL;
 		c->count = 0;
 	}
+
 	e->parent = NULL;
 	exif_entry_unref (e);
+	return 1;
 }
 
 ExifEntry *
